@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
                     else -> item
                 }
             }
-
+//oieeeeeeeee
             val taskTemp =
                 if (selected.name != "ALL") {
                     tasks.filter { it.category == selected.name }
