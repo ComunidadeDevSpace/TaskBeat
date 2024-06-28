@@ -7,8 +7,9 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class TaskEntity(
-    @PrimaryKey(autoGenerate = true)
-    val id: Long = 0,
+    @PrimaryKey
+    @ColumnInfo
     val name: String,
-    val category: String,
+    @ColumnInfo
+    val category: String
 )

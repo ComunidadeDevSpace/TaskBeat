@@ -10,6 +10,6 @@ interface TaskDao {
     @Query("Select * From taskentity")
     fun getAll(): List<TaskEntity>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insetAll(taskEntity: List<TaskEntity>)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAll(taskEntity: List<TaskEntity>)
 }
