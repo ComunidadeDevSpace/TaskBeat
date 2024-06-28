@@ -1,5 +1,5 @@
 package com.devspace.taskbeats
-//Onde parei? No vídeo de aula 05 que é uma "aula online", aos 30:39.
+//Onde parei? No vídeo de aula 07, mas fiz ela até o final. ver aula 8 akakak
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings.Global
