@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 class CategoryListAdapter :
     ListAdapter<CategoryUiData, CategoryListAdapter.CategoryViewHolder>(CategoryListAdapter) {
 
-    private lateinit var onClick: (CategoryUiData) -> Unit
+    private var onClick: (CategoryUiData) -> Unit = {} //optei por inicializar SEMPRE, por padrão, como uma função VAZIA, pra nao dar crash caso eu nao inicialize
 
     fun setOnClickListener(onClick: (CategoryUiData) -> Unit) {
         this.onClick = onClick
