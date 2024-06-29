@@ -1,5 +1,5 @@
 package com.devspace.taskbeats
-//Onde parei? No vídeo de aula 07, mas fiz ela até o final. ver aula 8 akakak
+//Onde parei? Terminei aula 9, ver aula 10 agora.
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings.Global
@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity() {
     private var categoriess = listOf<CategoryUiData>()
     private var taskss = listOf<TaskUiData>()
+    private val categoryAdapter = CategoryListAdapter()
     private val db by lazy {
         Room.databaseBuilder(
             applicationContext,
@@ -41,12 +42,20 @@ class MainActivity : AppCompatActivity() {
         val rvTask = findViewById<RecyclerView>(R.id.rv_tasks)
 
         val taskAdapter = TaskListAdapter()
-        val categoryAdapter = CategoryListAdapter()
+        val catEntEmpt = CategoryEntity("", false)
 
 
         categoryAdapter.setOnClickListener { selected ->
             if (selected.name == "+") {
-                Snackbar.make(rvCategory, "+ is selected", Snackbar.LENGTH_LONG).show()
+                val createCategoryBottomSheet = CreateCategoryBottomSheet { categoryName ->
+                    val categoryEntity = CategoryEntity(
+                        name = categoryName,
+                        isSelected = false
+                    )
+                    insertCategory(categoryEntity)
+                }
+                createCategoryBottomSheet.show(supportFragmentManager, "createCategoryBottomSheet")
+
             } else {
                 val categoryTemp = categoriess.map { item ->
                     when {
@@ -71,7 +80,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         rvCategory.adapter = categoryAdapter
-        getCategoriesFromDataBase(categoryAdapter)
+        //insertCategory(catEntEmpt)
+        GlobalScope.launch(Dispatchers.IO) {
+            getCategoriesFromDataBase()
+        }
         //categoryAdapter.submitList(categories)
 
         rvTask.adapter = taskAdapter
@@ -108,21 +120,22 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun getCategoriesFromDataBase(adapter: CategoryListAdapter) {
-        GlobalScope.launch(Dispatchers.IO) {
-            val categoriesFromDb: List<CategoryEntity> = categoryDao.getAll()
-            val categoriesUiData =
-                categoriesFromDb.map { //Aqui é o contrário do que está sendo feito na linha 64: estamos pegando do banco de dados e puxando pra lista de novo.
-                    CategoryUiData(name = it.name, isSelected = it.isSelected)
-                }.toMutableList() //esse tomutablelist serve pro que tá no nome mutablelist
+    private fun getCategoriesFromDataBase() {
+        val categoriesFromDb: List<CategoryEntity> = categoryDao.getAll()
+        val categoriesUiData =
+            categoriesFromDb.map { //Aqui é o contrário do que está sendo feito na linha 64: estamos pegando do banco de dados e puxando pra lista de novo.
+                CategoryUiData(name = it.name, isSelected = it.isSelected)
+            }.toMutableList() //esse tomutablelist serve pro que tá no nome mutablelist
 
-            //daqui pra baixo, eu só tô criando o botão de adiçonar
-            val list = listOf<CategoryUiData>()
-            val mutableList = mutableListOf<CategoryUiData>()
-            categoriesUiData.add(CategoryUiData(name = "+", isSelected = false))
+        //daqui pra baixo, eu só tô criando o botão de adiçonar
+        val list = listOf<CategoryUiData>()
+        val mutableList = mutableListOf<CategoryUiData>()
+        categoriesUiData.add(CategoryUiData(name = "+", isSelected = false))
+        GlobalScope.launch(Dispatchers.Main) {
             categoriess = categoriesUiData
-            adapter.submitList(categoriesUiData)
+            categoryAdapter.submitList(categoriesUiData)
         }
+
     }
 
     private fun getTasksFromDataBase(adapter: TaskListAdapter) {
@@ -134,9 +147,19 @@ class MainActivity : AppCompatActivity() {
                     category = it.category
                 )
             }.toMutableList()
-            taskss = tasksUiData
-            adapter.submitList(tasksUiData)
+            GlobalScope.launch(Dispatchers.Main) {
+                taskss = tasksUiData
+                adapter.submitList(tasksUiData)
+            }
         }
+    }
+
+    private fun insertCategory(categoryEntity: CategoryEntity) {
+        GlobalScope.launch(Dispatchers.IO) {
+            categoryDao.inset(categoryEntity)//ainda precisa atualizar a view pro usuário
+            getCategoriesFromDataBase()
+        }
+
     }
 }
 

@@ -14,4 +14,8 @@ interface CategoryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insetAll(categoryEntity: List<CategoryEntity>) //removemos o vararg e usamos a lista
     //mesmo com a documentação dizendo pra usar vararg e nao usar lista.
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun inset(categoryEntity: CategoryEntity)
+
 }
