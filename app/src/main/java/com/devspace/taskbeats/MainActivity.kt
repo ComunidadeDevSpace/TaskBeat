@@ -1,5 +1,5 @@
 package com.devspace.taskbeats
-//Onde parei? Terminei aula 9, ver aula 10 agora.
+//Onde parei? Terminei aula 9, ver aula 10 agora. -
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings.Global
