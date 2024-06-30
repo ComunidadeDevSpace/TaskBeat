@@ -3,10 +3,13 @@ package com.devspace.taskbeats
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings.Global
+import android.service.controls.actions.FloatAction
 import android.util.Log
+import android.widget.Button
 import androidx.core.app.TaskStackBuilder
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -15,6 +18,7 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity() {
     private var categoriess = listOf<CategoryUiData>()
     private var taskss = listOf<TaskUiData>()
+
     private val categoryAdapter = CategoryListAdapter()
     private val db by lazy {
         Room.databaseBuilder(
@@ -40,10 +44,15 @@ class MainActivity : AppCompatActivity() {
 
         val rvCategory = findViewById<RecyclerView>(R.id.rv_categories)
         val rvTask = findViewById<RecyclerView>(R.id.rv_tasks)
-
+        val fabCreateTask = findViewById<FloatingActionButton>(R.id.fab_create_task)
         val taskAdapter = TaskListAdapter()
-        val catEntEmpt = CategoryEntity("", false)
+        fabCreateTask.setOnClickListener {
+            val createTaskBottomSheet = CreateTaskBottomSheet(categoriess)
+            { taskToBeCreated ->
+            }
 
+            createTaskBottomSheet.show(supportFragmentManager,"createTaskBottomSheet")
+        }
 
         categoryAdapter.setOnClickListener { selected ->
             if (selected.name == "+") {
@@ -55,7 +64,6 @@ class MainActivity : AppCompatActivity() {
                     insertCategory(categoryEntity)
                 }
                 createCategoryBottomSheet.show(supportFragmentManager, "createCategoryBottomSheet")
-
             } else {
                 val categoryTemp = categoriess.map { item ->
                     when {

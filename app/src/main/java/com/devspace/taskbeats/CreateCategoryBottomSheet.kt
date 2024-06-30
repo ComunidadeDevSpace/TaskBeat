@@ -20,6 +20,7 @@ class CreateCategoryBottomSheet(
         val view = inflater.inflate(R.layout.create_category, container, false)
         val btnCreate = view.findViewById<Button>(R.id.btn_category_create)
         val tieCategoryName = view.findViewById<TextInputEditText>(R.id.tie_category_name)
+
         btnCreate.setOnClickListener{
             val name = tieCategoryName.text.toString()
             onCreateClicked.invoke(name)
