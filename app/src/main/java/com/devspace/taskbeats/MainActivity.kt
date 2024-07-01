@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
             TaskBeatDataBase::class.java, "database-task-beat"
         ).build()
     }
-
+//TTT
     private val categoryDao: CategoryDao by lazy {
         db.getCategoryDao()
     }
